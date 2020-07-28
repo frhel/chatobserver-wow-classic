@@ -2,8 +2,9 @@
 ## Title: ChatObserver
 ## Notes: Monitor chat for specified keywords
 ## Author: Frzee
-## Version: 0.5
+## Version: 0.5.1
 ## DefaultState: enabled
+## SavedVariables: CODB
 
 
 main.lua
