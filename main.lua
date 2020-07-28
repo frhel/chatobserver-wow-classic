@@ -4,6 +4,8 @@
 local kwdArr = {};
 local playSoundOption = "off";
 local monitoring = false;
+local bossMonitoring = false;
+local bossArr = {"azu", "kaz", "eme", "leth", "yso", "tae"};
 
 local RED = "|cFFFF4477";
 local YELLOW = "|cFFFFFFAA";
@@ -11,7 +13,7 @@ local BLUE = "|cFF22AAFF";
 
 local defaultChatID = DEFAULT_CHAT_FRAME:GetID();
 
-print(RED .. "ChatObserver v0.4 loaded >>> " .. BLUE .. "Type /co for more options.")
+print(RED .. "ChatObserver v0.5 loaded >>> " .. BLUE .. "Type /co for more options.")
 
 -- Define chat commands
 SLASH_PHRASE1 = "/co";
@@ -27,6 +29,7 @@ SlashCmdList["PHRASE"] = function(msg)
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co clear " .. RED .."to clear watchlist")
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co list " .. RED .."to list keywords in watchlist")
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off " .. RED .." to turn notification sound on/off")
+		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co wb" .. RED .. "to start monitoring chatter about world raid bosses")
 		return
 	end
 
@@ -87,6 +90,12 @@ SlashCmdList["PHRASE"] = function(msg)
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co remove <keyword> " .. RED .."to remove word from watchlist (fx /co remove UBRS)")
 		return
 	end
+	
+	if msg == "wb" then
+		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co web on" .. RED .. " or " .. YELLOW .. "/co web off " .. RED .." to switch world raid boss monitoring on/off")
+		return
+	end
+
 
 	-- Handle everything else as a split string with index 1 as command and index 2 as param
 	local splitMsg = {}
@@ -137,6 +146,19 @@ SlashCmdList["PHRASE"] = function(msg)
 			SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Keyword " .. YELLOW .. splitMsg[2] .. RED .. " not found in watchlist")
 			return
 		end
+
+		if splitMsg[1] == "wb" then
+			if splitMsg[2] == "on" then
+				bossMonitoring = true
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Monitoring for world raid bosses has been turned " .. YELLOW .. "on")
+			elseif splitMsg[2] == "off" then
+				bossMonitoring = false
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Monitoring for world raid bosses has been turned " .. YELLOW .. "off")
+			else
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co wb on" .. RED .. " or " .. YELLOW .. "/co wb off " .. RED .." to switch world raid boss monitoring on/off")
+			end
+			return
+		end
 	end
 end
 
@@ -144,14 +166,28 @@ local f = CreateFrame("Frame")
 
 f:RegisterEvent("CHAT_MSG_CHANNEL")
 f:SetScript("OnEvent", function(self, event, message, sender, lang, channel, player2, flags, chanID, chanIndex, chanBaseName, _, lineID, guid, ...)
-	if monitoring == false then
-		return
+	local tempArr = {};
+	if monitoring == true then
+		if #kwdArr > 0 then
+			for i = 1,#kwdArr do
+				table.insert(tempArr, kwdArr[i])
+			end
+		end
 	end
-	if #kwdArr == 0 then
+
+	if bossMonitoring == true then
+		for i = 1,#bossArr do
+			table.insert(tempArr, bossArr[i])
+		end
+	end
+
+	if #tempArr == 0 then
 		return
 	end
 
-	for i = 1,#kwdArr do
+
+	
+	for i = 1,#tempArr do
 		if chanID == 24 or 1 or 2 then
 			local senderSplit =  string.match(sender, "^(.*)-")
 			if senderSplit ~= nil then
@@ -160,7 +196,14 @@ f:SetScript("OnEvent", function(self, event, message, sender, lang, channel, pla
 			local _, class = GetPlayerInfoByGUID(guid)
 			local _,_,_, classColor = GetClassColor(class)
 			local msgStr = RED .. " **CO Match** " .. YELLOW .. "|c" .. classColor .."|Hplayer:" .. sender .. "|h<" .. sender .. ">|h " .. BLUE .. message
-			if message:lower():match(kwdArr[i]) then
+			
+			-- Add special case for 'st' as it's a common pairing of letters in normal words, not always meaning Sunken Temple.
+			-- Really cant be arse rewriting the whole matching section of the addon just because of this
+			if tempArr[i] == "st" then
+				tempArr[i] = " st"
+			end
+
+			if message:lower():match(tempArr[i]) then
 				print(msgStr)
 				if SELECTED_CHAT_FRAME:GetID() ~= defaultChatID then
 					SELECTED_CHAT_FRAME:AddMessage(msgStr)
