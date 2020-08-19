@@ -1,7 +1,7 @@
 -- TODO: Custom message to send to player on click
 -- TODO: Set up local storage for custome message and settings
 
-local version = "0.5.1"
+local version = "0.5.2"
 local kwdArr = {};
 local playSoundOption = "off";
 local monitoring = false;
@@ -219,7 +219,7 @@ f:SetScript("OnEvent", function(self, event, message, sender, lang, channel, pla
 				-- Add special case for 'st' as it's a common pairing of letters in normal words, not always meaning Sunken Temple.
 				-- Really cant be arse rewriting the whole matching section of the addon just because of this
 				if tempArr[i] == "st" then
-					tempArr[i] = " st"
+					tempArr[i] = " st "
 				end
 
 				if message:lower():match(tempArr[i]) then
