@@ -15,9 +15,9 @@ local BLUE = "|cFF22AAFF";
 local defaultChatID = DEFAULT_CHAT_FRAME:GetID();
 
 -- Define chat commands
-SLASH_PHRASE1 = "/co";
-SLASH_PHRASE2 = "/chatobserver";
-SlashCmdList["PHRASE"] = function(msg)
+SLASH_COPHRASE1 = "/co";
+SLASH_COPHRASE2 = "/chatobserver";
+SlashCmdList["COPHRASE"] = function(msg)
 	-- lowercase everything to make it easier to work with
 	msg = msg:lower()
 	-- If no param given for command print options list
