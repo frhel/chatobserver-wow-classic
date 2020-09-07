@@ -2,7 +2,7 @@
 ## Title: ChatObserver
 ## Notes: Monitor chat for specified keywords
 ## Author: Frzee
-## Version: 0.5.3
+## Version: 0.5.4
 ## DefaultState: enabled
 ## SavedVariables: CODB
 

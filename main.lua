@@ -1,7 +1,7 @@
 -- TODO: Custom message to send to player on click
 -- TODO: Set up local storage for custome message and settings
 
-local version = "0.5.3"
+local version = "0.5.4"
 local kwdArr = {};
 local playSoundOption = "off";
 local monitoring = false;
@@ -163,13 +163,13 @@ SlashCmdList["COPHRASE"] = function(msg)
 	end
 end
 
-local f = CreateFrame("Frame")
+local COFrame = CreateFrame("Frame")
 
-f:RegisterEvent("ADDON_LOADED") -- Fired when saved variables are loaded
-f:RegisterEvent("PLAYER_LOGOUT") -- Fired when about to log out
-f:RegisterEvent("CHAT_MSG_CHANNEL")
+COFrame:RegisterEvent("ADDON_LOADED") -- Fired when saved variables are loaded
+COFrame:RegisterEvent("PLAYER_LOGOUT") -- Fired when about to log out
+COFrame:RegisterEvent("CHAT_MSG_CHANNEL")
 
-f:SetScript("OnEvent", function(self, event, message, sender, lang, channel, player2, flags, chanID, chanIndex, chanBaseName, _, lineID, guid, ...)
+COFrame:SetScript("OnEvent", function(self, event, message, sender, lang, channel, player2, flags, chanID, chanIndex, chanBaseName, _, lineID, guid, ...)
 	if event == "ADDON_LOADED" and message == "ChatObserver" then
 		print(RED .. "ChatObserver " .. version .. " loaded >>> " .. BLUE .. "Type /co or /chatobserver for more options.")
 		if CODB then
@@ -203,8 +203,6 @@ f:SetScript("OnEvent", function(self, event, message, sender, lang, channel, pla
 		if #tempArr == 0 then
 			return
 		end
-
-
 		
 		for i = 1,#tempArr do
 			if chanID == 24 or 1 or 2 then
