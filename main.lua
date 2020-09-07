@@ -1,7 +1,7 @@
 -- TODO: Custom message to send to player on click
 -- TODO: Set up local storage for custome message and settings
 
-local version = "0.5.4"
+local version = "0.5.5"
 local kwdArr = {};
 local playSoundOption = "off";
 local monitoring = false;
@@ -204,31 +204,33 @@ COFrame:SetScript("OnEvent", function(self, event, message, sender, lang, channe
 			return
 		end
 		
-		for i = 1,#tempArr do
-			if chanID == 24 or 1 or 2 then
-				local senderSplit =  string.match(sender, "^(.*)-")
-				if senderSplit ~= nil then
-					sender = senderSplit
-				end
-				local _, class = GetPlayerInfoByGUID(guid)
-				local _,_,_, classColor = GetClassColor(class)
-				local msgStr = RED .. " **[ChatObserver] Match** " .. YELLOW .. "|c" .. classColor .."|Hplayer:" .. sender .. "|h<" .. sender .. ">|h " .. BLUE .. message
-				
-				-- Add special case for 'st' as it's a common pairing of letters in normal words, not always meaning Sunken Temple.
-				-- Really cant be arse rewriting the whole matching section of the addon just because of this
-				if tempArr[i] == "st" then
-					tempArr[i] = " st "
-				end
-
-				if message:lower():match(tempArr[i]) then
-					print(msgStr)
-					if SELECTED_CHAT_FRAME:GetID() ~= defaultChatID then
-						SELECTED_CHAT_FRAME:AddMessage(msgStr)
-					end			
-					if playSoundOption == "on" then
-						PlaySoundFile("sound/doodad/pvp_rune_speedcustom0.ogg", "Master")
+		if monitoring == true or bossMonitoring == true then
+			for i = 1,#tempArr do
+				if chanID == 24 or 1 or 2 then
+					local senderSplit =  string.match(sender, "^(.*)-")
+					if senderSplit ~= nil then
+						sender = senderSplit
 					end
-					return
+					local _, class = GetPlayerInfoByGUID(guid)
+					local _,_,_, classColor = GetClassColor(class)
+					local msgStr = RED .. " **[ChatObserver] Match** " .. YELLOW .. "|c" .. classColor .."|Hplayer:" .. sender .. "|h<" .. sender .. ">|h " .. BLUE .. message
+					
+					-- Add special case for 'st' as it's a common pairing of letters in normal words, not always meaning Sunken Temple.
+					-- Really cant be arse rewriting the whole matching section of the addon just because of this
+					if tempArr[i] == "st" then
+						tempArr[i] = " st "
+					end
+
+					if message:lower():match(tempArr[i]) then
+						print(msgStr)
+						if SELECTED_CHAT_FRAME:GetID() ~= defaultChatID then
+							SELECTED_CHAT_FRAME:AddMessage(msgStr)
+						end			
+						if playSoundOption == "on" then
+							PlaySoundFile("sound/doodad/pvp_rune_speedcustom0.ogg", "Master")
+						end
+						return
+					end
 				end
 			end
 		end
