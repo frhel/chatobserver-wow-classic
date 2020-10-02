@@ -137,7 +137,7 @@ SlashCmdList["COPHRASE"] = function(msg)
 				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Sound" .. YELLOW .. " disabled " .. RED .."for all alerts")
 				return
 			else
-				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off " .. RED .." to turn notification sound on/off")
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off" .. RED .." to turn notification sound on/off")
 				return
 			end 
 		end
@@ -153,7 +153,7 @@ SlashCmdList["COPHRASE"] = function(msg)
 				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Operating System notification " .. YELLOW .. " disabled " .. RED .."for all alerts")
 				return
 			else
-				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co flashos on" .. RED .. " or " .. YELLOW .. "/co flashos off " .. RED .." to turn operating system icon notification on/off")
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co flashos on" .. RED .. " or " .. YELLOW .. "/co flashos off" .. RED .." to turn operating system icon notification on/off")
 				return
 			end 
 		end
