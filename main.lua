@@ -4,6 +4,7 @@
 local version = "0.5.5"
 local kwdArr = {};
 local playSoundOption = "off";
+local flashOS = "off";
 local monitoring = false;
 local bossMonitoring = false;
 local bossArr = {" azu", " kaz", " emeriss", " leth", " yso", " tae"};
@@ -24,11 +25,15 @@ SlashCmdList["COPHRASE"] = function(msg)
 	if msg == "" then 		
 		local bossMonitoringStatus = RED .. "[OFF]"
 		local soundStatus = RED .. "[OFF]"
+		local flashStatus = RED .. "[OFF]"
 		if bossMonitoring == true then
 			bossMonitoringStatus = BLUE .. "[ON]"
 		end
 		if playSoundOption == "on" then
 			soundStatus = BLUE .. "[ON]"
+		end
+		if flashOS == "on" then
+			flashStatus = BLUE .. "[ON]"
 		end 
 
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co start" .. RED .. " or " .. YELLOW .. "/co stop " .. RED .."to start/stop monitoring for keywords from watchlist")
@@ -37,6 +42,7 @@ SlashCmdList["COPHRASE"] = function(msg)
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co clear " .. RED .."to clear watchlist")
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> Type " .. YELLOW .. "/co list " .. RED .."to list keywords in watchlist")
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> " .. soundStatus .. RED .. " Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off " .. RED .." to turn notification sound on/off")
+		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> " .. flashStatus .. RED .. " Type " .. YELLOW .. "/co flashos on" .. RED .. " or " .. YELLOW .. "/co flashos off " .. RED .." to turn operating system icon notification on/off")
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " >>> " .. bossMonitoringStatus .. RED .. " Type " .. YELLOW .. "/co wb" .. RED .. " to start/stop monitoring chatter about world raid bosses")
 		return
 	end
@@ -89,6 +95,11 @@ SlashCmdList["COPHRASE"] = function(msg)
 		return
 	end
 
+	if msg == "flashos" then
+		SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co flashos on" .. RED .. " or " .. YELLOW .. "/co flashos off " .. RED .." to turn operating system icon notification on/off")
+		return
+	end
+
 	if msg == "add" then
 		SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co add <keyword> " .. RED .."to add word to watchlist (fx /co add UBRS)")
 		return
@@ -126,7 +137,23 @@ SlashCmdList["COPHRASE"] = function(msg)
 				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Sound" .. YELLOW .. " disabled " .. RED .."for all alerts")
 				return
 			else
-				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off " .. RED .." to turn notification sound on/off")
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co sound on" .. RED .. " or " .. YELLOW .. "/co sound off" .. RED .." to turn notification sound on/off")
+				return
+			end 
+		end
+
+		-- Turn flashos on/off
+		if splitMsg[1] == "flashos" then
+			if splitMsg[2] == "on" then 
+				flashOS = "on" 
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Operating System notification " .. YELLOW .. " enabled " .. RED .."for all alerts")
+				return
+			elseif splitMsg[2] == "off" then
+				flashOS = "off"
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Operating System notification " .. YELLOW .. " disabled " .. RED .."for all alerts")
+				return
+			else
+				SELECTED_CHAT_FRAME:AddMessage(RED .. " [ChatObserver] Type " .. YELLOW .. "/co flashos on" .. RED .. " or " .. YELLOW .. "/co flashos off" .. RED .." to turn operating system icon notification on/off")
 				return
 			end 
 		end
@@ -174,12 +201,14 @@ COFrame:SetScript("OnEvent", function(self, event, message, sender, lang, channe
 		print(RED .. "ChatObserver " .. version .. " loaded >>> " .. BLUE .. "Type /co or /chatobserver for more options.")
 		if CODB then
 			playSoundOption = CODB["playSoundOption"]
+			flashOS = CODB["flashOS"]
 			bossMonitoring = CODB["bossMonitoring"]
 		end
 		return
 	elseif event == "PLAYER_LOGOUT" then
 		CODB = {};
 		CODB["playSoundOption"] = playSoundOption
+		flashOS = CODB["flashOS"]
 		CODB["bossMonitoring"] = bossMonitoring
 		return
 	end
@@ -228,6 +257,9 @@ COFrame:SetScript("OnEvent", function(self, event, message, sender, lang, channe
 						end			
 						if playSoundOption == "on" then
 							PlaySoundFile("sound/doodad/pvp_rune_speedcustom0.ogg", "Master")
+						end
+						if flashOS == "on" then
+							FlashClientIcon()
 						end
 						return
 					end
