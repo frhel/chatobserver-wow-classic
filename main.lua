@@ -1,10 +1,10 @@
 -- TODO: Custom message to send to player on click
 -- TODO: Set up local storage for custome message and settings
 
-local version = "0.5.5"
+local version = "0.6"
 local kwdArr = {};
 local playSoundOption = "off";
-local flashOS = "off";
+local flashOS = "on";
 local monitoring = false;
 local bossMonitoring = false;
 local bossArr = {" azu", " kaz", " emeriss", " leth", " yso", " tae"};
